@@ -1,19 +1,13 @@
 package test1.demo1.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.*;
+import java.util.*;
 
-@Component
+@Service
 public class ProcedureMetadataService {
 
     @Autowired
@@ -24,20 +18,19 @@ public class ProcedureMetadataService {
 
         try (Connection conn = dataSource.getConnection()) {
             DatabaseMetaData metaData = conn.getMetaData();
+
             ResultSet rs = metaData.getProcedureColumns(null, schema.toUpperCase(), procedureName.toUpperCase(), null);
 
             while (rs.next()) {
                 String paramName = rs.getString("COLUMN_NAME");
-                int columnType = rs.getInt("COLUMN_TYPE"); // 1=IN, 2=INOUT, 4=OUT
-                int dataType = rs.getInt("DATA_TYPE");
+                int columnType = rs.getInt("COLUMN_TYPE"); // IN/OUT/INOUT
+                int dataType = rs.getInt("DATA_TYPE");     // SQL type (e.g., 12 for VARCHAR)
 
-                if (columnType == DatabaseMetaData.procedureColumnIn ||
-                    columnType == DatabaseMetaData.procedureColumnInOut) {
-                    Map<String, String> param = new HashMap<>();
-                    param.put("name", paramName);
-                    param.put("type", String.valueOf(dataType));
-                    parameters.add(param);
-                }
+                Map<String, String> param = new HashMap<>();
+                param.put("name", paramName);
+                param.put("type", mapSQLType(dataType));
+                param.put("direction", mapDirection(columnType));
+                parameters.add(param);
             }
 
             rs.close();
@@ -47,4 +40,28 @@ public class ProcedureMetadataService {
 
         return parameters;
     }
+
+    private String mapDirection(int code) {
+        return switch (code) {
+            case DatabaseMetaData.procedureColumnIn -> "IN";
+            case DatabaseMetaData.procedureColumnInOut -> "INOUT";
+            case DatabaseMetaData.procedureColumnOut -> "OUT";
+            default -> "UNKNOWN";
+        };
+    }
+
+    private String mapSQLType(int type) {
+        return switch (type) {
+            case Types.VARCHAR -> "VARCHAR";
+            case Types.NVARCHAR -> "NVARCHAR";
+            case Types.NUMERIC -> "NUMBER";
+            case Types.INTEGER -> "INTEGER";
+            case Types.DATE -> "DATE";
+            case Types.TIMESTAMP -> "TIMESTAMP";
+            case Types.REF_CURSOR -> "REF_CURSOR";
+            default -> "OTHER(" + type + ")";
+        };
+    }
+
+
 }

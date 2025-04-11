@@ -1,15 +1,33 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><title>Dynamic Report</title></head>
+<head>
+    <title>Procedure Parameters</title>
+</head>
 <body>
-<h2>Dynamic Report Form</h2>
-    <form method="post" th:action="@{/report}">
-        <div th:each="p : ${parameters}">
-            <label th:text="${p.name}">Name</label>:
-            <input type="text" th:name="${p.name}" /><br/>
-        </div>
-        <button type="submit">Submit</button>
-    </form>
-
+<h2>Procedure Input</h2>
+<form method="post" th:action="@{/report}">
+    <table border="1" cellpadding="8" cellspacing="0">
+        <thead>
+        <tr>
+            <th>Parameter Name</th>
+            <th>Data Type</th>
+            <th>Direction</th>
+            <th>Input</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="p : ${parameters}">
+            <td th:text="${p.name}">Param Name</td>
+            <td th:text="${p.type}">Data Type</td>
+            <td>IN</td>
+            <td>
+                <input type="text" th:name="${p.name}" />
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <br/>
+    <button type="submit">Run Procedure</button>
+</form>
 </body>
 </html>
