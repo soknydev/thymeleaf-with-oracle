@@ -16,52 +16,44 @@ public class ProcedureMetadataService {
     public List<Map<String, String>> getProcedureParameters(String schema, String procedureName) {
         List<Map<String, String>> parameters = new ArrayList<>();
 
-        try (Connection conn = dataSource.getConnection()) {
-            DatabaseMetaData metaData = conn.getMetaData();
+        String sql = """
+                SELECT argument_name, in_out, data_type
+                FROM all_arguments
+                WHERE owner = ? AND object_name = ?
+                  AND package_name IS NULL
+                  AND argument_name IS NOT NULL
+                ORDER BY position
+                """;
 
-            ResultSet rs = metaData.getProcedureColumns(null, schema.toUpperCase(), procedureName.toUpperCase(), null);
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, schema.toUpperCase());
+            stmt.setString(2, procedureName.toUpperCase());
+
+            ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                String paramName = rs.getString("COLUMN_NAME");
-                int columnType = rs.getInt("COLUMN_TYPE"); // IN/OUT/INOUT
-                int dataType = rs.getInt("DATA_TYPE");     // SQL type (e.g., 12 for VARCHAR)
+                String paramName = rs.getString("ARGUMENT_NAME");
+                String direction = rs.getString("IN_OUT");
+                String dataType = rs.getString("DATA_TYPE");
+
+                // not display row that row = REF CURSOR
+                if (dataType.equalsIgnoreCase("REF CURSOR")) {
+                    continue;
+                }
 
                 Map<String, String> param = new HashMap<>();
                 param.put("name", paramName);
-                param.put("type", mapSQLType(dataType));
-                param.put("direction", mapDirection(columnType));
+                param.put("type", dataType);
+                param.put("direction", direction != null ? direction : "UNKNOWN");
                 parameters.add(param);
             }
 
-            rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         return parameters;
     }
-
-    private String mapDirection(int code) {
-        return switch (code) {
-            case DatabaseMetaData.procedureColumnIn -> "IN";
-            case DatabaseMetaData.procedureColumnInOut -> "INOUT";
-            case DatabaseMetaData.procedureColumnOut -> "OUT";
-            default -> "UNKNOWN";
-        };
-    }
-
-    private String mapSQLType(int type) {
-        return switch (type) {
-            case Types.VARCHAR -> "VARCHAR";
-            case Types.NVARCHAR -> "NVARCHAR";
-            case Types.NUMERIC -> "NUMBER";
-            case Types.INTEGER -> "INTEGER";
-            case Types.DATE -> "DATE";
-            case Types.TIMESTAMP -> "TIMESTAMP";
-            case Types.REF_CURSOR -> "REF_CURSOR";
-            default -> "OTHER(" + type + ")";
-        };
-    }
-
-
 }
