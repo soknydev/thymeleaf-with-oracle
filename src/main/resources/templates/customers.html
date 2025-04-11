@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Customer List</title>
+<!--    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>-->
+    <style>
+        table{
+            bordder-collape: collape;
+        }
+    </style>
+</head>
+<body>
+    <main class="container mx-auto">
+        <h2>Customer List</h2>
+        <table border="1" class="bg-redd-300">
+            <thead>
+            <tr     >
+                <th>ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Salary</th>
+                <th>DOB</th>
+                <th>Gender</th>
+                <th>Mobile</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="c : ${customers}">
+                <td th:text="${c.id}"></td>
+                <td th:text="${c.firstName}"></td>
+                <td th:text="${c.lastName}"></td>
+                <td th:text="${c.salary}"></td>
+                <td th:text="${#dates.format(c.dob, 'yyyy-MM-dd')}"></td>
+                <td th:text="${c.gender}"></td>
+                <td th:text="${c.mobilePhone}"></td>
+            </tr>
+            <tr th:if="${customers.empty}">
+                <td colspan="7">No customers found.</td>
+            </tr>
+            </tbody>
+    </main>
+</table>
+</body>
+</html>
