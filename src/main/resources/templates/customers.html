@@ -4,8 +4,45 @@
     <title>Customer List</title>
 <!--    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>-->
     <style>
-        table{
-            bordder-collape: collape;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 10px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            border-radius: 5px;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 30px;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #50d71e;
+            font-weight: bold;
+            color: whitesmoke;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #e9ecef;
+        }
+        .no-data {
+            text-align: center;
+            color: #6c757d;
         }
     </style>
 </head>
