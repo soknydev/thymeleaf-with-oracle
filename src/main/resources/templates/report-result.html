@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Results</title></head>
+<body>
+<h2>Results</h2>
+<table border="1" th:if="${data}">
+    <thead>
+    <tr th:each="col : ${data[0].keySet()}">
+        <th th:text="${col}">Col</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="row : ${data}">
+        <td th:each="val : ${row.values()}" th:text="${val}">Val</td>
+    </tr>
+    </tbody>
+</table>
+<a href="/report">Back</a>
+</body>
+</html>

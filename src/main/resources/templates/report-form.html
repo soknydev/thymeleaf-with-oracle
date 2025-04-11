@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Dynamic Report</title></head>
+<body>
+<h2>Dynamic Report Form</h2>
+    <form method="post" th:action="@{/report}">
+        <div th:each="p : ${parameters}">
+            <label th:text="${p.name}">Name</label>:
+            <input type="text" th:name="${p.name}" /><br/>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+
+</body>
+</html>

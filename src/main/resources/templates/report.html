@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dynamic Report</title>
+</head>
+<body>
+<h1>Generate Report</h1>
+<form action="#" th:action="@{/report}" method="post">
+    <label for="procedureName">Procedure Name:</label>
+    <input type="text" id="procedureName" name="procedureName" required />
+    <br/>
+    <!-- Add input fields for parameters as needed -->
+    <label for="param1">Parameter 1:</label>
+    <input type="text" id="param1" name="param1" />
+    <br/>
+    <label for="param2">Parameter 2:</label>
+    <input type="text" id="param2" name="param2" />
+    <br/>
+    <!-- Add more parameters dynamically as required -->
+    <button type="submit">Generate</button>
+</form>
+
+<div th:if="${reportData != null}">
+    <h2>Report Results:</h2>
+    <table border="1">
+        <thead>
+        <tr>
+            <th th:each="entry : ${reportData[0].entrySet()}" th:text="${entry.key}"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="row : ${reportData}">
+            <td th:each="entry : ${row.entrySet()}" th:text="${entry.value}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
