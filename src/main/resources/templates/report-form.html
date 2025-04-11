@@ -4,7 +4,7 @@
     <title>Procedure Parameters</title>
 </head>
 <body>
-<h2>Procedure Input</h2>
+<h2>Procedure</h2>
 <form method="post" th:action="@{/report}">
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
@@ -19,7 +19,15 @@
         <tr th:each="p : ${parameters}">
             <td th:text="${p.name}">Param Name</td>
             <td th:text="${p.type}">Data Type</td>
-            <td>IN</td>
+            <td>
+                <select th:name="${p.name +'_direction'}">
+                    <option value="DATE" th:selected="${p.direction == 'DATE'}">DATE</option>
+                    <option value="DATE-TIME" th:selected="${p.direction == 'DATE-TIME'}">DATE-TIME</option>
+                    <option value="SELECT" th:selected="${p.direction == 'SELECT'}">SELECT</option>
+                    <option value="TEXT" th:selected="${p.direction == 'TEXT'}">TEXT</option>
+                    <option value="HIDE" th:selected="${p.direction == 'HIDE'}">HIDE</option>
+                </select>
+            </td>
             <td>
                 <input type="text" th:name="${p.name}" />
             </td>

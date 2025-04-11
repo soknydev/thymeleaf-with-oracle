@@ -20,11 +20,13 @@ public class ReportController {
     @Autowired
     private OracleDynamicProcedureService dynamicService;
 
-    private static final String PROCEDURE_NAME = "PISETH.TPT_REPORT";
+    private static final String SCHEMA_NAME = "PISETH";
+    private static final String TABLE_NAME = "TPT_REPORT";
+    private static final String PROCEDURE_NAME = SCHEMA_NAME.concat(TABLE_NAME);
 
     @GetMapping("/report")
     public String form(Model model) {
-        List<Map<String, String>> parameters = metadataService.getProcedureParameters("PISETH", "TPT_REPORT");
+        List<Map<String, String>> parameters = metadataService.getProcedureParameters(SCHEMA_NAME, TABLE_NAME);
         model.addAttribute("parameters", parameters);
         return "report-form";
     }
