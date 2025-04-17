@@ -20,20 +20,19 @@ public class CustomerServiceImpl implements CustomerService {
     private final JdbcTemplate jdbcTemplate;
     private SimpleJdbcCall simpleJdbcCall;
 
-//    public CustomerService(JdbcTemplate jdbcTemplate) {
-//        this.jdbcTemplate = jdbcTemplate;
-//    }
+    String PROCEDURE = "GET_ALL_CUSTOMERS";
+    String CURSOR = "P_CURSOR";
 
     @PostConstruct
     private void init() {
         this.simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
-                .withProcedureName("GET_ALL_CUSTOMERS")
-                .returningResultSet("p_cursor", new CustomerRowMapper());
+                .withProcedureName(PROCEDURE)
+                .returningResultSet(CURSOR, new CustomerRowMapper());
     }
 
     public List<Customer> getAllCustomers() {
         Map<String, Object> result = simpleJdbcCall.execute();
-        return (List<Customer>) result.get("p_cursor");
+        return (List<Customer>) result.get(CURSOR);
     }
 
     private static class CustomerRowMapper implements RowMapper<Customer> {
