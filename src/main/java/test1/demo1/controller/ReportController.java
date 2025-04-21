@@ -20,8 +20,8 @@ public class ReportController {
     @Autowired
     private OracleDynamicProcedureService dynamicService;
 
-    private static final String SCHEMA_NAME = "PISETH";
-    private static final String TABLE_NAME = "TPT_REPORT";
+    private static final String SCHEMA_NAME = "ORA1";
+    private static final String TABLE_NAME = "GET_ACCOUNTS_V1";
     private static final String PROCEDURE_NAME = SCHEMA_NAME.concat(TABLE_NAME);
 
     @GetMapping("/report")
